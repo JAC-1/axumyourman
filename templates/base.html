@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <!-- <link
+            rel="stylesheet"
+            href="https://cdn.jsdelivr.net/npm/@picocss/pico@2/css/pico.min.css"
+        /> -->
+    <title>{% block title %}Default Title{% endblock title %}</title>
+    <link rel="stylesheet" href="/static/output.css" />
+</head>
+<style>
+    .nav-gradient-blur {
+        width: 100%;
+        height: 150%;
+        position: absolute;
+        z-index: 1;
+        top: 0;
+        opacity: 1;
+        backdrop-filter: blur(4rem);
+        -webkit-backdrop-filter: blur(4rem);
+        background: rgba(231, 237, 255, 0.156);
+        mask-image: linear-gradient(rgb(0, 0, 0) 50%, rgba(0, 0, 0, 0.8) 70%, rgba(0, 0, 0, 0) 100%);
+        -webkit-mask-image: linear-gradient(rgb(0, 0, 0) 50%, rgba(0, 0, 0, 0.8) 70%, rgba(0, 0, 0, 0) 100%);
+        inset: -1rem 0;
+    }
+</style>
+
+<body>
+    <nav class="fixed top-0 w-full flex-row flex justify-center px-2 py-5">
+        <div
+            class="rounded-full bg-white/30 border-white/20 border relative flex flex-row justify-between items-center w-10/12  gap-8 z-10">
+            <ul class="">
+                <li>学校法人</li>
+                <li><strong>日本工業大学</strong></li>
+            </ul>
+            <ul class="flex flex-row align-middle gap-4 ">
+                <li class="gap__sm">
+                    <strong><a href="#hero">Home</a></strong>
+                </li>
+                <li><a href="#about">About Us</a></li>
+                <li class="hidden">
+                    <a href="#campuses">学園案内</a>
+                    <ul dir="rtl" class="dropdown-content">
+                        <li><a href="#miyashiro">宮代キャンパス</a></li>
+                        <li><a href="#komaba">駒場キャンパス</a></li>
+                        <li><a href="#kanda">神田キャンパス</a></li>
+                    </ul>
+                </li>
+                <li><a href="#news">News</a></li>
+                <li><a href="#facilities">Facilities</a></li>
+            </ul>
+
+        </div>
+        <!-- <div class="w-full h-full absolute top-0 z-1 backdrop-blur-xl bg-white/5 blur-lg"></div> -->
+        <div class="nav-gradient-blur"></div>
+
+    </nav>
+
+    <main>{% block content %}{% endblock content %}</main>
+
+    <footer>
+        <p>&copy; 2024 My Website</p>
+    </footer>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.11.4/gsap.min.js"></script>
+    <script src="/static/js/main.js"></script>
+</body>
+
+</html>
