@@ -7,11 +7,16 @@ use axum::{
     routing::get,
     Extension, Router,
 };
+use include_dir::{include_dir, Dir};
 use std::sync::Arc;
 use tera::{Context, Tera};
 use tower_http::services::ServeDir;
+use tower_livereload::LiveReloadLayer;
 use tracing::{debug, error, info};
 use tracing_subscriber::{layer::SubscriberExt, util::SubscriberInitExt};
+
+static STATIC_DIR: Dir = include_dir!("$CARGO_MANIFEST_DIR/static");
+static TEMPLATE_DIR: Dir = include_dir!("$CARGO_MANIFEST_DIR/templates");
 
 #[tokio::main]
 async fn main() {
@@ -24,18 +29,28 @@ async fn main() {
         .with(tracing_subscriber::fmt::layer())
         .init();
 
-    let tera = match Tera::new("templates/**/*") {
-        Ok(t) => Arc::new(t),
-        Err(e) => {
-            println!("Error parsing templates: {}", e);
-            std::process::exit(1)
+    let mut tera = Tera::default();
+    for file in TEMPLATE_DIR.files() {
+        if let Some(path) = file.path().to_str() {
+            if let Ok(contents) = std::str::from_utf8(file.contents()) {
+                tera.add_raw_template(path, contents).unwrap();
+            }
         }
-    };
+    }
+    let tera = Arc::new(tera);
+    // let tera = match Tera::new("templates/**/*") {
+    //     Ok(t) => Arc::new(t),
+    //     Err(e) => {
+    //         println!("Error parsing templates: {}", e);
+    //         std::process::exit(1)
+    //     }
+    // };
 
     let app = Router::new()
         .route("/", get(home))
         .route("/greet/:name", get(greet))
         .layer(Extension(tera))
+        .layer(LiveReloadLayer::new())
         .nest_service("/static", ServeDir::new("static"));
 
     let listener = tokio::net::TcpListener::bind("127.0.0.1:3000")
